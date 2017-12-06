@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -29,18 +30,15 @@ MainWindow::~MainWindow()
 }
 void MainWindow::readData()
 {
-    /*
-
-    int rb =0;
     char buf[1024];
 
     if( tcpSocket->readLine(buf, 1024)> 0)
     {
-        cout<<buf<<endl;
-        QString czas = buf;
-        ui->etykieta_godzina->setText(czas);
+        //std::cout<<buf<<std::endl;
+        ui->textBrowser->setText(ui->textBrowser->toPlainText() +"[ktos] " +buf + "\n");
+
     }
-    */
+
 
 }
 void MainWindow::on_buttonNewRoom_clicked()
@@ -60,7 +58,10 @@ void MainWindow::on_buttonSend_clicked()
 {
     if(ui->lineEdit->text() != "")
     {
-        ui->textBrowser->setText(ui->textBrowser->toPlainText() +"[ktos] " +ui->lineEdit->text() + "\n");
+        //ui->lineEdit->text()
+        tcpSocket->write((ui->lineEdit->text()).toLocal8Bit());
+        ui->textBrowser->setText(ui->textBrowser->toPlainText() +"[Ty] " + ui->lineEdit->text() + "\n");
+
         ui->lineEdit->setText("");
     }
 
