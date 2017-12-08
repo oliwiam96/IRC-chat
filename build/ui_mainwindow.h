@@ -55,6 +55,7 @@ public:
     QPushButton *buttonConnect;
     QPushButton *buttonDisconnect;
     QLabel *labelConnection;
+    QPushButton *pushButton;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -140,6 +141,9 @@ public:
         labelConnection = new QLabel(centralWidget);
         labelConnection->setObjectName(QStringLiteral("labelConnection"));
         labelConnection->setGeometry(QRect(470, 180, 181, 21));
+        pushButton = new QPushButton(centralWidget);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+        pushButton->setGeometry(QRect(500, 20, 171, 31));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -178,6 +182,7 @@ public:
         buttonConnect->setText(QApplication::translate("MainWindow", "Po\305\202\304\205cz z serwerem", 0));
         buttonDisconnect->setText(QApplication::translate("MainWindow", "Roz\305\202\304\205cz z serwerem", 0));
         labelConnection->setText(QApplication::translate("MainWindow", "Stan po\305\202\304\205czenia: ", 0));
+        pushButton->setText(QApplication::translate("MainWindow", "Od\305\233wie\305\274", 0));
     } // retranslateUi
 
 };

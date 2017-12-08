@@ -26,8 +26,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    room.cpp \
+    user.cpp \
+    ircchat.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    room.h \
+    user.h \
+    ircchat.h
 
 FORMS    += mainwindow.ui

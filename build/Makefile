@@ -46,9 +46,15 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../SK_irc/main.cpp \
-		../SK_irc/mainwindow.cpp moc_mainwindow.cpp
+		../SK_irc/mainwindow.cpp \
+		../SK_irc/room.cpp \
+		../SK_irc/user.cpp \
+		../SK_irc/ircchat.cpp moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
+		room.o \
+		user.o \
+		ircchat.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/shell-unix.conf \
@@ -107,7 +113,10 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../SK_irc/SK_irc.pro ../SK_irc/main.cpp \
-		../SK_irc/mainwindow.cpp
+		../SK_irc/mainwindow.cpp \
+		../SK_irc/room.cpp \
+		../SK_irc/user.cpp \
+		../SK_irc/ircchat.cpp
 QMAKE_TARGET  = SK_irc
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = SK_irc
@@ -270,7 +279,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/SK_irc1.0.0 || mkdir -p .tmp/SK_irc1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/SK_irc1.0.0/ && $(COPY_FILE) --parents ../SK_irc/mainwindow.h .tmp/SK_irc1.0.0/ && $(COPY_FILE) --parents ../SK_irc/main.cpp ../SK_irc/mainwindow.cpp .tmp/SK_irc1.0.0/ && $(COPY_FILE) --parents ../SK_irc/mainwindow.ui .tmp/SK_irc1.0.0/ && (cd `dirname .tmp/SK_irc1.0.0` && $(TAR) SK_irc1.0.0.tar SK_irc1.0.0 && $(COMPRESS) SK_irc1.0.0.tar) && $(MOVE) `dirname .tmp/SK_irc1.0.0`/SK_irc1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/SK_irc1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/SK_irc1.0.0/ && $(COPY_FILE) --parents ../SK_irc/mainwindow.h ../SK_irc/room.h ../SK_irc/user.h ../SK_irc/ircchat.h .tmp/SK_irc1.0.0/ && $(COPY_FILE) --parents ../SK_irc/main.cpp ../SK_irc/mainwindow.cpp ../SK_irc/room.cpp ../SK_irc/user.cpp ../SK_irc/ircchat.cpp .tmp/SK_irc1.0.0/ && $(COPY_FILE) --parents ../SK_irc/mainwindow.ui .tmp/SK_irc1.0.0/ && (cd `dirname .tmp/SK_irc1.0.0` && $(TAR) SK_irc1.0.0.tar SK_irc1.0.0 && $(COMPRESS) SK_irc1.0.0.tar) && $(MOVE) `dirname .tmp/SK_irc1.0.0`/SK_irc1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/SK_irc1.0.0
 
 
 clean:compiler_clean 
@@ -323,6 +332,16 @@ main.o: ../SK_irc/main.cpp ../SK_irc/mainwindow.h
 mainwindow.o: ../SK_irc/mainwindow.cpp ../SK_irc/mainwindow.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../SK_irc/mainwindow.cpp
+
+room.o: ../SK_irc/room.cpp ../SK_irc/room.h \
+		../SK_irc/user.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o room.o ../SK_irc/room.cpp
+
+user.o: ../SK_irc/user.cpp ../SK_irc/user.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o user.o ../SK_irc/user.cpp
+
+ircchat.o: ../SK_irc/ircchat.cpp ../SK_irc/ircchat.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ircchat.o ../SK_irc/ircchat.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

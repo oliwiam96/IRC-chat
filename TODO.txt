@@ -1,0 +1,1 @@
+w przyszlosci zamienic to, co bedzie w funkcji odswiez (prosba o pobranie z serwera aktualnych danych o dostepnych uzytkownikach i pokojach) wykonywalo sie samo co jakis czas
