@@ -42,11 +42,13 @@ public:
     QListWidget *listWidget;
     QLabel *label_3;
     QWidget *tab;
-    QPushButton *pushButton_3;
     QListWidget *listWidget_2;
     QWidget *tab_2;
     QLabel *label_4;
     QLabel *label_5;
+    QLineEdit *lineEdit_login;
+    QLineEdit *lineEdit_password;
+    QPushButton *pushButton_2;
     QPushButton *buttonSend;
     QTextBrowser *textBrowser;
     QLabel *label;
@@ -101,9 +103,6 @@ public:
         tabWidget_2->addTab(tabWidget_2Page1, QString());
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
-        pushButton_3 = new QPushButton(tab);
-        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
-        pushButton_3->setGeometry(QRect(250, 10, 161, 61));
         listWidget_2 = new QListWidget(tab);
         listWidget_2->setObjectName(QStringLiteral("listWidget_2"));
         listWidget_2->setGeometry(QRect(10, 10, 221, 191));
@@ -116,6 +115,16 @@ public:
         label_5 = new QLabel(tab_2);
         label_5->setObjectName(QStringLiteral("label_5"));
         label_5->setGeometry(QRect(270, 20, 131, 111));
+        lineEdit_login = new QLineEdit(tab_2);
+        lineEdit_login->setObjectName(QStringLiteral("lineEdit_login"));
+        lineEdit_login->setGeometry(QRect(30, 60, 113, 29));
+        lineEdit_password = new QLineEdit(tab_2);
+        lineEdit_password->setObjectName(QStringLiteral("lineEdit_password"));
+        lineEdit_password->setGeometry(QRect(30, 100, 113, 29));
+        lineEdit_password->setEchoMode(QLineEdit::Password);
+        pushButton_2 = new QPushButton(tab_2);
+        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
+        pushButton_2->setGeometry(QRect(40, 150, 85, 29));
         tabWidget_2->addTab(tab_2, QString());
         buttonSend = new QPushButton(centralWidget);
         buttonSend->setObjectName(QStringLiteral("buttonSend"));
@@ -158,7 +167,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget_2->setCurrentIndex(2);
+        tabWidget_2->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -171,10 +180,12 @@ public:
         buttonEnterRoom->setText(QApplication::translate("MainWindow", "Wejd\305\272 do pokoju", 0));
         label_3->setText(QApplication::translate("MainWindow", "Wybrano:", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tabWidget_2Page1), QApplication::translate("MainWindow", "Pokoje", 0));
-        pushButton_3->setText(QApplication::translate("MainWindow", "Konwersacja prywatna", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab), QApplication::translate("MainWindow", "U\305\274ytkownicy", 0));
         label_4->setText(QApplication::translate("MainWindow", "Tw\303\263j profil", 0));
         label_5->setText(QString());
+        lineEdit_login->setText(QApplication::translate("MainWindow", "login", 0));
+        lineEdit_password->setText(QApplication::translate("MainWindow", "password", 0));
+        pushButton_2->setText(QApplication::translate("MainWindow", "Zaloguj", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_2), QApplication::translate("MainWindow", "Profil", 0));
         buttonSend->setText(QApplication::translate("MainWindow", "Wy\305\233lij", 0));
         label->setText(QApplication::translate("MainWindow", "Wprowad\305\272 tekst wiadomo\305\233ci", 0));

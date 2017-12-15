@@ -30,6 +30,8 @@ private slots:
 
     void on_buttonDisconnect_clicked();
 
+    void on_pushButton_2_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTcpSocket *tcpSocket;

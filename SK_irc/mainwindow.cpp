@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <iostream>
+ #include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -31,13 +32,22 @@ MainWindow::~MainWindow()
 void MainWindow::readData()
 {
     char buf[1024];
-
-    if( tcpSocket->readLine(buf, 1024)> 0)
+    while (tcpSocket->canReadLine())
     {
-        //std::cout<<buf<<std::endl;
-        ui->textBrowser->setText(ui->textBrowser->toPlainText() +"[ktos] " +buf + "\n");
+        if( tcpSocket->readLine(buf, 1024)> 0)
+        {
+
+            ui->textBrowser->setText(ui->textBrowser->toPlainText() +"[ktos] " +buf);
+            QScrollBar *sb = ui->textBrowser->verticalScrollBar();
+            //ui->textBrowser->setLineWrapMode(QTextBrowser::NoWrap);
+            sb->setValue(sb->maximum());
+            //ui->textBrowser->verticalScrollBar()->setValue(ui->textBrowser->verticalScrollBar()->maximum());
+
+
+        }
 
     }
+
 
 
 }
@@ -59,10 +69,13 @@ void MainWindow::on_buttonSend_clicked()
     if(ui->lineEdit->text() != "")
     {
         //ui->lineEdit->text()
-        tcpSocket->write((ui->lineEdit->text()).toLocal8Bit());
+        tcpSocket->write((ui->lineEdit->text() + ";").toLocal8Bit());
         ui->textBrowser->setText(ui->textBrowser->toPlainText() +"[Ty] " + ui->lineEdit->text() + "\n");
 
         ui->lineEdit->setText("");
+        QScrollBar *sb = ui->textBrowser->verticalScrollBar();
+        //ui->textBrowser->setLineWrapMode(QTextBrowser::NoWrap);
+        sb->setValue(sb->maximum());
     }
 
 }
@@ -77,4 +90,13 @@ void MainWindow::on_buttonDisconnect_clicked()
 {
     tcpSocket->disconnectFromHost();
     ui->labelConnection->setText("Zamknięto połączenie!");
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    QString wiadomosc_logowania = "\\LOGIN ";
+    wiadomosc_logowania += ui->lineEdit_login->text() + " ";
+    wiadomosc_logowania += ui->lineEdit_password->text() + ";";
+    tcpSocket->write(wiadomosc_logowania.toLocal8Bit());
+
 }
