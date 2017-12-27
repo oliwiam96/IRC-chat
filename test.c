@@ -39,6 +39,42 @@ bool login_validation(sqlite3 *db, char *zErrMsg, int rc, char *name, char *pass
 	free(password_select);
 	return identical;
 }
+void set_user_active(sqlite3 *db, char *zErrMsg, int rc, char * name)
+{
+
+	char sql_update[80];
+	strcpy(sql_update, "UPDATE USERS SET ACTIVE = 1 WHERE NAME = \"");
+	strcat(sql_update, name);
+	strcat(sql_update, "\";");
+	printf("%s\n", sql_update);
+	rc = sqlite3_exec(db, sql_update, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ) {
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+	} else {
+		fprintf(stdout, "Operation \"set user active\" done successfully\n");
+	}
+	
+}
+void set_user_inactive(sqlite3 *db, char *zErrMsg, int rc, char * name)
+{
+
+	char sql_update[80];
+	strcpy(sql_update, "UPDATE USERS SET ACTIVE = 0 WHERE NAME = \"");
+	strcat(sql_update, name);
+	strcat(sql_update, "\";");
+	printf("%s\n", sql_update);
+	rc = sqlite3_exec(db, sql_update, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ) {
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+	} else {
+		fprintf(stdout, "Operation \"set user inactive\" done successfully\n");
+	}
+	
+}
+
+
 static int callback_name_free_validation(void *data, int argc, char **argv, char **azColName){
 	int *a = (int*) data;
 	*a = atoi(argv[0]);
@@ -70,7 +106,7 @@ void add_new_user(sqlite3 *db, char *zErrMsg, int rc, char *name, char *password
 	strcat(sql_insert, name);
 	strcat(sql_insert, "\", \"");
 	strcat(sql_insert, password);
-	strcat(sql_insert, "\", 1);");
+	strcat(sql_insert, "\", 0);");
 	printf("%s\n", sql_insert);
 	rc = sqlite3_exec(db, sql_insert, callback, 0, &zErrMsg);
 	if( rc != SQLITE_OK ) {
@@ -79,6 +115,53 @@ void add_new_user(sqlite3 *db, char *zErrMsg, int rc, char *name, char *password
 	} else {
 		fprintf(stdout, "Operation \"add new user\" done successfully\n");
 	}
+}
+
+void show_database(sqlite3 *db, char *zErrMsg, int rc)
+{
+	const char* data = "Kolejny rekord z relacji USERS";
+	/* Create SQL statement */
+	char sql_select[] = "SELECT * from USERS";
+
+	/* Execute SQL statement */
+	rc = sqlite3_exec(db, sql_select, callback, (void*)data, &zErrMsg);
+	
+	if( rc != SQLITE_OK ) {
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+	} else {
+		fprintf(stdout, "Operation done successfully\n");
+	}
+}
+
+bool login(sqlite3 *db, char *zErrMsg, int rc, char *name, char *password)
+{
+	if(login_validation(db, zErrMsg, rc, name, password))
+	{
+		set_user_active(db, zErrMsg, rc, name);
+		return true; 
+	}
+	else
+	{
+		return false;
+	}
+}
+bool create_new_account(sqlite3 *db, char *zErrMsg, int rc, char *name, char *password)
+{
+	// TODO mutex podnies
+	if(name_free_validation(db, zErrMsg, rc, name))
+	{
+		add_new_user(db, zErrMsg, rc, name, password);
+		set_user_active(db, zErrMsg, rc, name);
+		// TODO mutex opusc
+		return true;
+	}
+	else
+	{
+		// TODO mutex opusc
+		return false;
+	}
+		
 }
 
 int main(int argc, char* argv[]) {
@@ -134,19 +217,7 @@ int main(int argc, char* argv[]) {
 	char name3[] = "zenek";
 	char password3[] = "maslo";
 	add_new_user(db, zErrMsg, rc, name3, password3);
-	const char* data = "Callback function called";
-	/* Create SQL statement */
-	char sql_select[] = "SELECT * from USERS";
-
-	/* Execute SQL statement */
-	rc = sqlite3_exec(db, sql_select, callback, (void*)data, &zErrMsg);
 	
-	if( rc != SQLITE_OK ) {
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		sqlite3_free(zErrMsg);
-	} else {
-		fprintf(stdout, "Operation done successfully\n");
-	}
 	char name[] = "oli";
 	char password[] = "oli123";
 	if(login_validation(db, zErrMsg, rc, name, password))
@@ -158,6 +229,9 @@ int main(int argc, char* argv[]) {
 		printf("Login wolny\n");
 	else
 		printf("Login zajety\n");
+	set_user_active(db, zErrMsg, rc, name);
+	show_database(db, zErrMsg, rc);
+	
 	sqlite3_close(db);
 	return 0;
 }
