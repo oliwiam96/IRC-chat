@@ -603,7 +603,7 @@ char* Database::getStringWithAllRooms()
 {
     char *zErrMsg = 0;
     char sql_select[] = "SELECT NAME FROM ROOMS;";
-    char *data = (char *) malloc(500* sizeof(char));; //MAKS 500 dlugosc lancucha z nazwami pokojow
+    char *data = (char *) malloc(500* sizeof(char)); //MAKS 500 dlugosc lancucha z nazwami pokojow
     strcpy(data, "");
 
     int rc = sqlite3_exec(db, sql_select, callbackGetStringWithAllRooms, (void*)data, &zErrMsg);
@@ -687,7 +687,7 @@ int *Database::getArrayofAllUsersConnfdInRoom(char *roomName)
 
 
 
-///* main tylko dla testowania klasy
+/* main tylko dla testowania klasy
 int main(int argc, char* argv[]) {
     char fileName[] = "test.db";
     Database *db = new Database(fileName);
@@ -762,5 +762,5 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-//*/
+*/
 
