@@ -17,45 +17,29 @@
 
 #define SERVER_PORT 1234
 #define QUEUE_SIZE 5
-#define MAX_CLIENTS 20
+#define MAX_CLIENTS 50
 
 
 
 //struktura zawierająca dane, które zostaną przekazane do wątku
 typedef struct thread_client_data_t{
-	struct sockaddr_in address; /* Client remote adress */
 	int fd; /* Connection file descriptor */
-	int user_id;
-	int data_base_id;
+        char *name;
+
 
 
 } t_client;
-//struktura zawierająca dane, które zostaną przekazane do wątku
-typedef struct thread_data_t
-{
-    int fd;
-} t_typ;
 
-int user_id_count = 0;
-t_client *clients[MAX_CLIENTS]; // TODO przerobic na vector (C++)
 
 Database *db;
 
-void add_client(t_client *client)
+void write_to_client(char *msg, int connfd)
 {
-        for(int i = 0; i < MAX_CLIENTS; i++)
-        {
-                if(!clients[i])
-                {
-                        clients[i] = client;
-                        return;
-                }
-        }
+    write(connfd, msg, strlen(msg));
 }
 
 
-
-void wykonaj_polecenie(char* msg, int connfd)
+void wykonaj_polecenie(char* msg, t_client * th_data)
 {
         printf("Wykonuje polecenie: %s\n", msg);
 	char *pch; //a pointer to the beginning of the token
@@ -64,22 +48,157 @@ void wykonaj_polecenie(char* msg, int connfd)
 	/** MOZLIWE WIADOMOSCI OD KLIENTA DO SERWERA **/
 	if(!strcmp(pch, "\\LOGIN"))
 	{
-		printf("LOGOWANIE\n");
-		pch = strtok(NULL, " ");
-		printf("Login to: %s\n", pch);
-		char name[50];
-		strcpy(name, pch);
-		pch = strtok(NULL, " ");
-		printf("Haslo to: %s\n", pch);
-		char password[50];
-		strcpy(password, pch);
-                if(db->login(name, password, connfd))
-			printf("Haslo ok\n");
-		else
-			printf("Haslo zle\n");
-		// TODO #if haslo ok, write \\LOGINSUCCESSFUL dodaj do listy polaczonych (aktywnych) 			// uzytkownikow
-		// TODO #else  write \\WRONGPASSWORD
+            printf("LOGOWANIE\n");
+            pch = strtok(NULL, " ");
+            printf("Login to: %s\n", pch);
+            char name[50];
+            strcpy(name, pch);
+            pch = strtok(NULL, " ");
+            printf("Haslo to: %s\n", pch);
+            char password[50];
+            strcpy(password, pch);
+            if(db->login(name, password, th_data->fd))
+            {
+                printf("Haslo ok\n");
+                th_data->name = (char *) malloc((strlen(name)+1) * sizeof(char));
+                strcpy(th_data->name, name);
+                char answer[] = "\\LOGINSUCCESSFUL\n";
+                write_to_client(answer, th_data->fd);
+            }
+            else
+            {
+                printf("Haslo zle\n");
+                char answer[] = "\\LOGINFAILED\n";
+                write_to_client(answer, th_data->fd);
+            }
+
         }
+        else if(!strcmp(pch, "\\SIGNUP"))
+        {
+            printf("TWORZENIE KONTA\n");
+            pch = strtok(NULL, " ");
+            printf("Login to: %s\n", pch);
+            char name[50];
+            strcpy(name, pch);
+            pch = strtok(NULL, " ");
+            printf("Haslo to: %s\n", pch);
+            char password[50];
+            strcpy(password, pch);
+            if(db->createNewAccount(name, password, th_data->fd))
+            {
+                printf("Sign up ok\n");
+                char answer[] = "\\SIGNUPSUCCESSFUL\n";
+                write_to_client(answer, th_data->fd);
+            }
+            else
+            {
+                printf("Login zajety\n");
+                char answer[] = "\\USERNAMEALREADYTAKEN\n";
+                write_to_client(answer, th_data->fd);
+            }
+        }
+        else if(!strcmp(pch, "\\LOGOUT"))
+        {
+            printf("WYLOGOWANIE\n");
+            db->logout(th_data->name);
+
+            // TODO ZAKONCZYC WATEK
+        }
+        else if(!strcmp(pch, "\\SHOWROOMS"))
+        {
+            printf("POKAZ DOSTEPNE POKOJE\n");
+            char answer[550];
+            strcpy(answer, "\\ROOMS ");
+            char *allRooms = db->getStringWithAllRooms();
+            strcat(answer, allRooms);
+            strcat(answer, "\n");
+            delete allRooms;
+            write_to_client(answer, th_data->fd);
+
+        }
+
+        else if(!strcmp(pch, "\\ENTERROOM"))
+        {
+            printf("WEJDZ DO POKOJU\n");
+            pch = strtok(NULL, " ");
+            printf("nazwa pokoju to: %s\n", pch);
+            char roomName[50];
+            strcpy(roomName, pch);
+            db->enterRoom(th_data->name, roomName);
+
+        }
+        else if(!strcmp(pch, "\\CREATEROOM"))
+        {
+            printf("UTWORZ POKOJ\n");
+            pch = strtok(NULL, " ");
+            printf("nazwa pokoju to: %s\n", pch);
+            char roomName[50];
+            strcpy(roomName, pch);
+            if(db->createNewRoom(roomName))
+            {
+                printf("Create room ok\n");
+                char answer[] = "\\CREATEROOMSUCCESSFUL\n";
+                write_to_client(answer, th_data->fd);
+            }
+            else
+            {
+                printf("Nazwa pokoju zajeta\n");
+                char answer[] = "\\ROOMNAMEALREADYTAKEN\n";
+                write_to_client(answer, th_data->fd);
+            }
+
+        }
+        else if(!strcmp(pch, "\\LEAVEROOM"))
+        {
+            printf("WYJDZ Z POKOJU\n");
+            pch = strtok(NULL, " ");
+            printf("nazwa pokoju to: %s\n", pch);
+            char roomName[50];
+            strcpy(roomName, pch);
+            db->leaveRoom(th_data->name, roomName);
+        }
+        else if(!strcmp(pch, "\\DELETEROOM"))
+        {
+            printf("USUN POKOJ\n");
+            pch = strtok(NULL, " ");
+            printf("nazwa pokoju to: %s\n", pch);
+            char roomName[50];
+            strcpy(roomName, pch);
+            db->deleteRoom(roomName);
+        }
+        else if(!strcmp(pch, "\\MSG"))
+        {
+            printf("WIADOMOSC W POKOJU!!!\n");
+            pch = strtok(NULL, " ");
+            printf("nazwa pokoju to: %s\n", pch);
+            char roomName[50];
+            strcpy(roomName, pch);
+            char msg[500];
+            strcpy(msg, "\\MSG ");
+            strcat(msg, roomName);
+            strcat(msg, " ");
+            strcat(msg, th_data->name);
+            pch = strtok(NULL, " ");
+            strcat(msg, pch);
+            int n = db->getNumberOfUsersInRoom(roomName);
+            int *usersConnfdInRoom = db->getArrayofAllUsersConnfdInRoom(roomName);
+            for(int i = 0; i < n; i++)
+            {
+                if(usersConnfdInRoom[i] != th_data->fd) //nie pisz sam do siebie
+                {
+                    write_to_client(msg, usersConnfdInRoom[i]);
+                }
+            }
+            db->leaveRoom(th_data->name, roomName);
+        }
+        else
+        {
+            printf("NIEZNANE POLECENIE");
+            printf("%s\n", pch);
+
+        }
+
+
 }
 void sklejanie(char* buffer, char** lewy, char** prawy)
 {
@@ -116,21 +235,6 @@ void *ThreadBehavior(void *t_data)
 	pthread_detach(pthread_self());
 	t_client *th_data = (t_client *)t_data;
     
-	/* nowe rzeczy
-	int n_odczytane2;
-	char buffer2[50];
-	while( (n_odczytane2 = read(th_data->fd, buffer2, 49)) > 0) //odczytanie powiodlo sie
-	{
-		if(n_odczytane2 > 0)
-		{
-			buffer2[n_odczytane2] = '\0';
-			printf("%s\n", buffer2);
-			
-			
-		}
-			
-	}*/
-    
 	bool stop = false;
 	int buffer_length = 50;
 	char buffer[buffer_length];
@@ -150,8 +254,8 @@ void *ThreadBehavior(void *t_data)
 				char kopia_wykonaj[strlen(lewy)];
 				strcpy(kopia_wykonaj, lewy);
 				
-                                wykonaj_polecenie(kopia_wykonaj, th_data->fd);
-				for(int i = 0; i < MAX_CLIENTS; i++)
+                                wykonaj_polecenie(kopia_wykonaj, th_data);
+                                /*for(int i = 0; i < MAX_CLIENTS; i++)
 				{
 					if(!clients[i])
 						break;
@@ -166,7 +270,7 @@ void *ThreadBehavior(void *t_data)
 							//stop = true;
 					}
 				
-				}
+                                }*/
 				sklejanie(prawy, &lewy, &prawy);
 			}
 			if(prawy != NULL)
@@ -195,7 +299,6 @@ void handleConnection(int connection_socket_descriptor) {
     //wynik funkcji tworzącej wątek
     int create_result = 0;
     
-
     //uchwyt na wątek
     pthread_t thread1;
 
@@ -207,9 +310,7 @@ void handleConnection(int connection_socket_descriptor) {
     
     // wypełnienie pól struktury
     //t_data->fd = connection_socket_descriptor;
-	client_data->fd = connection_socket_descriptor;
-	client_data->user_id = user_id_count++;
-	add_client(client_data);
+    client_data->fd = connection_socket_descriptor;
 
     create_result = pthread_create(&thread1, NULL, ThreadBehavior, (void *)client_data);
     if (create_result){
