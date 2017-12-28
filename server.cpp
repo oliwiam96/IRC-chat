@@ -55,7 +55,7 @@ void add_client(t_client *client)
 
 
 
-void wykonaj_polecenie(char* msg)
+void wykonaj_polecenie(char* msg, int connfd)
 {
         printf("Wykonuje polecenie: %s\n", msg);
 	char *pch; //a pointer to the beginning of the token
@@ -73,7 +73,7 @@ void wykonaj_polecenie(char* msg)
 		printf("Haslo to: %s\n", pch);
 		char password[50];
 		strcpy(password, pch);
-                if(db->login(name, password))
+                if(db->login(name, password, connfd))
 			printf("Haslo ok\n");
 		else
 			printf("Haslo zle\n");
@@ -150,7 +150,7 @@ void *ThreadBehavior(void *t_data)
 				char kopia_wykonaj[strlen(lewy)];
 				strcpy(kopia_wykonaj, lewy);
 				
-				wykonaj_polecenie(kopia_wykonaj);
+                                wykonaj_polecenie(kopia_wykonaj, th_data->fd);
 				for(int i = 0; i < MAX_CLIENTS; i++)
 				{
 					if(!clients[i])
