@@ -18,7 +18,8 @@ class Database
         static int callbackLoginValidation(void *data, int argc, char **argv, char **azColName);
         bool loginValidation(char *name, char *password);
         void setUserActive(char *name);
-        void setUserInctive(char *name);
+        void setUserInactive(char *name);
+        void setConnectionDescriptor(char *name, int connfd);
         static int callbackNameFreeValidation(void *data, int argc, char **argv, char **azColName);
         bool nameFreeValidation(char *name);
         void addNewUser(char *name, char *password);
@@ -28,8 +29,8 @@ class Database
         virtual ~Database();
         void showDatabase();
         void showDatabase2();
-        bool login(char *name, char *password);
-        bool createNewAccount(char *name, char *password);
+        bool login(char *name, char *password, int connfd);
+        bool createNewAccount(char *name, char *password, int connfd);
 
 };
 

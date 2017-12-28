@@ -36,6 +36,7 @@ void Database::setUp()
                     "ID INTEGER PRIMARY KEY NOT NULL," \
                     "NAME	TEXT NOT NULL," \
                     "PASSWORD TEXT NOT NULL," \
+                    "CONNFD INT NOT NULL," \
                     "ACTIVE INT NOT NULL );";
 
     /* Execute SQL statement */
@@ -51,12 +52,12 @@ void Database::setUp()
     }
 
     char *zErrMsg2 = 0;
-    char sql_insert[] = "INSERT INTO USERS (NAME, PASSWORD, ACTIVE) "  \
-                    "VALUES ('oli', 'oli123', 0 );" \
-             "INSERT INTO USERS (NAME, PASSWORD, ACTIVE) "  \
-                    "VALUES ('kuba', 'kuba123', 0 );" \
-             "INSERT INTO USERS (NAME, PASSWORD, ACTIVE) "  \
-                    "VALUES ('admin', 'admin', 0 );";
+    char sql_insert[] = "INSERT INTO USERS (NAME, PASSWORD, CONNFD, ACTIVE) "  \
+                    "VALUES ('oli', 'oli123', 3, 0 );" \
+             "INSERT INTO USERS (NAME, PASSWORD, CONNFD, ACTIVE) "  \
+                    "VALUES ('kuba', 'kuba123', 4, 0 );" \
+             "INSERT INTO USERS (NAME, PASSWORD, CONNFD, ACTIVE) "  \
+                    "VALUES ('admin', 'admin', 5, 0 );";
 
     /* Execute SQL statement */
     int rc2 = sqlite3_exec(db, sql_insert, callback, 0, &zErrMsg2);
@@ -148,7 +149,7 @@ void Database::setUserActive(char *name)
 
 }
 
-void Database::setUserInctive(char *name)
+void Database::setUserInactive(char *name)
 {
     char *zErrMsg = 0;
     char sql_update[80];
@@ -164,6 +165,29 @@ void Database::setUserInctive(char *name)
     } else
     {
         fprintf(stdout, "Operation \"set user inactive\" done successfully\n");
+    }
+
+}
+void Database::setConnectionDescriptor(char *name, int connfd)
+{
+    char *zErrMsg = 0;
+    char sql_update[80];
+    strcpy(sql_update, "UPDATE USERS SET CONNFD = ");
+    char buffer[20];
+    sprintf(buffer, "%d", connfd);
+    strcat(sql_update, buffer);
+    strcat(sql_update, " WHERE NAME = \"");
+    strcat(sql_update, name);
+    strcat(sql_update, "\";");
+    printf("%s\n", sql_update);
+    int rc = sqlite3_exec(db, sql_update, callback, 0, &zErrMsg);
+    if( rc != SQLITE_OK )
+    {
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+    } else
+    {
+        fprintf(stdout, "Operation \"set connection descriptor \" done successfully\n");
     }
 
 }
@@ -201,11 +225,11 @@ void Database::addNewUser(char *name, char *password)
 {
     char *zErrMsg = 0;
     char sql_insert[80];
-    strcpy(sql_insert, "INSERT INTO USERS(NAME, PASSWORD, ACTIVE) VALUES (\"");
+    strcpy(sql_insert, "INSERT INTO USERS(NAME, PASSWORD, CONNFD, ACTIVE) VALUES (\"");
     strcat(sql_insert, name);
     strcat(sql_insert, "\", \"");
     strcat(sql_insert, password);
-    strcat(sql_insert, "\", 0);");
+    strcat(sql_insert, "\", 0, 0);");
     printf("%s\n", sql_insert);
     int rc = sqlite3_exec(db, sql_insert, callback, 0, &zErrMsg);
     if( rc != SQLITE_OK )
@@ -257,10 +281,11 @@ void Database::showDatabase2()
     }
 }
 
-bool Database::login(char *name, char *password)
+bool Database::login(char *name, char *password, int connfd)
 {
     if(loginValidation(name, password))
     {
+        setConnectionDescriptor(name, connfd);
         setUserActive(name);
         return true;
     }
@@ -270,13 +295,14 @@ bool Database::login(char *name, char *password)
     }
 }
 
-bool Database::createNewAccount(char *name, char *password)
+bool Database::createNewAccount(char *name, char *password, int connfd)
 {
     // mutex P
     pthread_mutex_lock(&mutex);
     if(nameFreeValidation(name))
     {
         addNewUser(name, password);
+        setConnectionDescriptor(name, connfd);
         setUserActive(name);
         // mutex V
         pthread_mutex_unlock(&mutex);
@@ -311,11 +337,12 @@ int main(int argc, char* argv[]) {
         printf("Login wolny\n");
     else
         printf("Login zajety\n");
-    db->setUserActive(name);
+    db->setUserInactive(name);
     char i[] = "hejka";
-    db->createNewAccount(i, i);
+    db->createNewAccount(i, i, 5);
     char j[] = "siemka";
-    db->createNewAccount(j, j);
+    db->createNewAccount(j, j, 5);
+    db->setConnectionDescriptor(j, 12);
 
     db->showDatabase();
     db->showDatabase2();
@@ -324,5 +351,6 @@ int main(int argc, char* argv[]) {
     delete db;
     return 0;
 }
+
 
 

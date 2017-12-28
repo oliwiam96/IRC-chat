@@ -41,23 +41,13 @@ t_client *clients[MAX_CLIENTS]; // TODO przerobic na vector (C++)
 
 Database *db;
 
-void add_client(t_client *client)
-{
-        for(int i = 0; i < MAX_CLIENTS; i++)
-        {
-                if(!clients[i])
-                {
-                        clients[i] = client;
-                        return;
-                }
-        }
-}
+
 
 
 
 void wykonaj_polecenie(char* msg)
 {
-        printf("Wykonuje polecenie: %s\n", msg);
+	printf("Wykonuje polecenie: %s\n", msg);
 	char *pch; //a pointer to the beginning of the token
 	printf ("Splitting string \"%s\" into tokens:\n", msg);
 	pch = strtok(msg, " ");
@@ -73,13 +63,13 @@ void wykonaj_polecenie(char* msg)
 		printf("Haslo to: %s\n", pch);
 		char password[50];
 		strcpy(password, pch);
-                if(db->login(name, password))
+                if(db->loginValidation(name, password))
 			printf("Haslo ok\n");
 		else
 			printf("Haslo zle\n");
 		// TODO #if haslo ok, write \\LOGINSUCCESSFUL dodaj do listy polaczonych (aktywnych) 			// uzytkownikow
 		// TODO #else  write \\WRONGPASSWORD
-        }
+	}
 }
 void sklejanie(char* buffer, char** lewy, char** prawy)
 {
@@ -161,7 +151,6 @@ void *ThreadBehavior(void *t_data)
 						strcpy(kopia, lewy);
 						kopia[strlen(lewy)] = '\n'; //czy to jest ok? :<
 						write(clients[i]->fd, kopia, strlen(lewy)+1);
-                                                printf("fd wynosi: %d\n", clients[i]->fd);
 						//if(strcmp(lewy, "PAPA") == 0) // na razie to nie dziala
 							//stop = true;
 					}
@@ -222,7 +211,7 @@ void handleConnection(int connection_socket_descriptor) {
 
 int main(int argc, char* argv[])
 {
-        printf("Serwer wystartowany\n");
+	printf("Serwer wystartowany\n");
         char fileName[] = "test.db";
         db = new Database(fileName);
 	int server_socket_descriptor; // to samo co listenfd
@@ -283,3 +272,4 @@ int main(int argc, char* argv[])
 	close(server_socket_descriptor);
 	return(0);
 }
+
