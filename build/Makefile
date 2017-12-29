@@ -47,15 +47,17 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../SK_irc/main.cpp \
 		../SK_irc/mainwindow.cpp \
-		../SK_irc/room.cpp \
-		../SK_irc/user.cpp \
-		../SK_irc/ircchat.cpp moc_mainwindow.cpp
+		../SK_irc/server.cpp \
+		../SK_irc/chatroom.cpp moc_mainwindow.cpp \
+		moc_server.cpp \
+		moc_chatroom.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
-		room.o \
-		user.o \
-		ircchat.o \
-		moc_mainwindow.o
+		server.o \
+		chatroom.o \
+		moc_mainwindow.o \
+		moc_server.o \
+		moc_chatroom.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/shell-unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -114,9 +116,8 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../SK_irc/SK_irc.pro ../SK_irc/main.cpp \
 		../SK_irc/mainwindow.cpp \
-		../SK_irc/room.cpp \
-		../SK_irc/user.cpp \
-		../SK_irc/ircchat.cpp
+		../SK_irc/server.cpp \
+		../SK_irc/chatroom.cpp
 QMAKE_TARGET  = SK_irc
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = SK_irc
@@ -146,7 +147,7 @@ first: all
 
 all: Makefile $(TARGET)
 
-$(TARGET): ui_mainwindow.h $(OBJECTS)  
+$(TARGET): ui_mainwindow.h ui_chatroom.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: ../SK_irc/SK_irc.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmake.conf /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -279,7 +280,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/SK_irc1.0.0 || mkdir -p .tmp/SK_irc1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/SK_irc1.0.0/ && $(COPY_FILE) --parents ../SK_irc/mainwindow.h ../SK_irc/room.h ../SK_irc/user.h ../SK_irc/ircchat.h .tmp/SK_irc1.0.0/ && $(COPY_FILE) --parents ../SK_irc/main.cpp ../SK_irc/mainwindow.cpp ../SK_irc/room.cpp ../SK_irc/user.cpp ../SK_irc/ircchat.cpp .tmp/SK_irc1.0.0/ && $(COPY_FILE) --parents ../SK_irc/mainwindow.ui .tmp/SK_irc1.0.0/ && (cd `dirname .tmp/SK_irc1.0.0` && $(TAR) SK_irc1.0.0.tar SK_irc1.0.0 && $(COMPRESS) SK_irc1.0.0.tar) && $(MOVE) `dirname .tmp/SK_irc1.0.0`/SK_irc1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/SK_irc1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/SK_irc1.0.0/ && $(COPY_FILE) --parents ../SK_irc/mainwindow.h ../SK_irc/server.h ../SK_irc/chatroom.h .tmp/SK_irc1.0.0/ && $(COPY_FILE) --parents ../SK_irc/main.cpp ../SK_irc/mainwindow.cpp ../SK_irc/server.cpp ../SK_irc/chatroom.cpp .tmp/SK_irc1.0.0/ && $(COPY_FILE) --parents ../SK_irc/mainwindow.ui ../SK_irc/chatroom.ui .tmp/SK_irc1.0.0/ && (cd `dirname .tmp/SK_irc1.0.0` && $(TAR) SK_irc1.0.0.tar SK_irc1.0.0 && $(COMPRESS) SK_irc1.0.0.tar) && $(MOVE) `dirname .tmp/SK_irc1.0.0`/SK_irc1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/SK_irc1.0.0
 
 
 clean:compiler_clean 
@@ -302,19 +303,37 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_mainwindow.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_server.cpp moc_chatroom.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp
-moc_mainwindow.cpp: ../SK_irc/mainwindow.h
+	-$(DEL_FILE) moc_mainwindow.cpp moc_server.cpp moc_chatroom.cpp
+moc_mainwindow.cpp: ../SK_irc/server.h \
+		../SK_irc/mainwindow.h \
+		../SK_irc/chatroom.h \
+		../SK_irc/mainwindow.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/osboxes/SK/SK_irc -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../SK_irc/mainwindow.h -o moc_mainwindow.cpp
+
+moc_server.cpp: ../SK_irc/mainwindow.h \
+		../SK_irc/server.h \
+		../SK_irc/chatroom.h \
+		../SK_irc/server.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/osboxes/SK/SK_irc -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../SK_irc/server.h -o moc_server.cpp
+
+moc_chatroom.cpp: ../SK_irc/server.h \
+		../SK_irc/mainwindow.h \
+		../SK_irc/chatroom.h \
+		../SK_irc/chatroom.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/osboxes/SK/SK_irc -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/4.9 -I/usr/include/x86_64-linux-gnu/c++/4.9 -I/usr/include/c++/4.9/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../SK_irc/chatroom.h -o moc_chatroom.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h
+compiler_uic_make_all: ui_mainwindow.h ui_chatroom.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h
+	-$(DEL_FILE) ui_mainwindow.h ui_chatroom.h
 ui_mainwindow.h: ../SK_irc/mainwindow.ui
 	/usr/lib/x86_64-linux-gnu/qt5/bin/uic ../SK_irc/mainwindow.ui -o ui_mainwindow.h
+
+ui_chatroom.h: ../SK_irc/chatroom.ui
+	/usr/lib/x86_64-linux-gnu/qt5/bin/uic ../SK_irc/chatroom.ui -o ui_chatroom.h
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -326,25 +345,36 @@ compiler_clean: compiler_moc_header_clean compiler_uic_clean
 
 ####### Compile
 
-main.o: ../SK_irc/main.cpp ../SK_irc/mainwindow.h
+main.o: ../SK_irc/main.cpp ../SK_irc/mainwindow.h \
+		../SK_irc/server.h \
+		../SK_irc/chatroom.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../SK_irc/main.cpp
 
 mainwindow.o: ../SK_irc/mainwindow.cpp ../SK_irc/mainwindow.h \
+		../SK_irc/server.h \
+		../SK_irc/chatroom.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../SK_irc/mainwindow.cpp
 
-room.o: ../SK_irc/room.cpp ../SK_irc/room.h \
-		../SK_irc/user.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o room.o ../SK_irc/room.cpp
+server.o: ../SK_irc/server.cpp ../SK_irc/server.h \
+		../SK_irc/mainwindow.h \
+		../SK_irc/chatroom.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o server.o ../SK_irc/server.cpp
 
-user.o: ../SK_irc/user.cpp ../SK_irc/user.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o user.o ../SK_irc/user.cpp
-
-ircchat.o: ../SK_irc/ircchat.cpp ../SK_irc/ircchat.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ircchat.o ../SK_irc/ircchat.cpp
+chatroom.o: ../SK_irc/chatroom.cpp ../SK_irc/chatroom.h \
+		../SK_irc/server.h \
+		../SK_irc/mainwindow.h \
+		ui_chatroom.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o chatroom.o ../SK_irc/chatroom.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
+
+moc_server.o: moc_server.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_server.o moc_server.cpp
+
+moc_chatroom.o: moc_chatroom.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_chatroom.o moc_chatroom.cpp
 
 ####### Install
 

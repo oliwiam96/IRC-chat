@@ -5,6 +5,9 @@
 #include<QDebug>
 #include <QtNetwork>
 
+#include "server.h"
+#include "chatroom.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -18,25 +21,37 @@ public:
     ~MainWindow();
 
 private slots:
-    void readData();
 
-    void on_buttonNewRoom_clicked();
+    void on_pushButton_connect_clicked();
 
-    void on_buttonEnterRoom_clicked();
+    void on_pushButton_disconnect_clicked();
 
-    void on_buttonSend_clicked();
+    void on_pushButton_login_clicked();
 
-    void on_buttonConnect_clicked();
+    void on_pushButton_signup_clicked();
 
-    void on_buttonDisconnect_clicked();
+    void on_pushButton_enter_room_clicked();
 
-    void on_pushButton_2_clicked();
+    void on_pushButton_delete_room_clicked();
 
-    void on_pushButton_3_clicked();
+    void on_pushButton_refresh_clicked();
+
+    void on_pushButton_new_room_clicked();
+
+
+    void addRoomItem(QString roomName);
+    void deleteAllRommsItems();
+    void dispalyMsgInRoom(QString roomName, QString userName, QString msg);
 
 private:
     Ui::MainWindow *ui;
-    QTcpSocket *tcpSocket;
+    Server *server;
+    QList<ChatRoom*> *rooms;
+
+    void addNewRoomWindow(QString roomName);
+    ChatRoom* getRoomWindow(QString roomName);
+    void deleteRoomWindow(QString roomName);
+    void deleteAllRoomsWindows();
 };
 
 #endif // MAINWINDOW_H

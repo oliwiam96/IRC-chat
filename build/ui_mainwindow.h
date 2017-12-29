@@ -22,7 +22,6 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
-#include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -33,32 +32,33 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-    QTabWidget *tabWidget_2;
-    QWidget *tabWidget_2Page1;
-    QWidget *verticalLayoutWidget;
-    QVBoxLayout *verticalLayout;
-    QPushButton *buttonNewRoom;
-    QPushButton *buttonEnterRoom;
-    QPushButton *pushButton_3;
-    QListWidget *listWidget;
-    QLabel *label_3;
-    QWidget *tab;
-    QListWidget *listWidget_2;
-    QWidget *tab_2;
-    QLabel *label_4;
-    QLabel *label_5;
+    QTabWidget *tabWidget_tabs;
+    QWidget *tab_connect;
+    QPushButton *pushButton_connect;
+    QPushButton *pushButton_disconnect;
+    QLabel *label_connection_state;
+    QLineEdit *lineEdit_IP;
+    QLabel *label_IP;
+    QLineEdit *lineEdit_port;
+    QLabel *label_port;
+    QWidget *tab_login;
+    QLabel *label_picture;
     QLineEdit *lineEdit_login;
     QLineEdit *lineEdit_password;
-    QPushButton *pushButton_2;
-    QPushButton *buttonSend;
-    QTextBrowser *textBrowser;
-    QLabel *label;
-    QLabel *label_2;
-    QLineEdit *lineEdit;
-    QPushButton *buttonConnect;
-    QPushButton *buttonDisconnect;
-    QLabel *labelConnection;
-    QPushButton *pushButton;
+    QPushButton *pushButton_login;
+    QPushButton *pushButton_signup;
+    QWidget *tab_rooms;
+    QWidget *verticalLayoutWidget;
+    QVBoxLayout *verticalLayout;
+    QPushButton *pushButton_enter_room;
+    QPushButton *pushButton_delete_room;
+    QPushButton *pushButton_refresh;
+    QLabel *label_choose;
+    QListWidget *listWidget_rooms;
+    QWidget *verticalLayoutWidget_2;
+    QVBoxLayout *verticalLayout_2;
+    QLineEdit *lineEdit_new_room;
+    QPushButton *pushButton_new_room;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -70,96 +70,104 @@ public:
         MainWindow->resize(703, 472);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        tabWidget_2 = new QTabWidget(centralWidget);
-        tabWidget_2->setObjectName(QStringLiteral("tabWidget_2"));
-        tabWidget_2->setGeometry(QRect(10, 10, 441, 241));
-        tabWidget_2Page1 = new QWidget();
-        tabWidget_2Page1->setObjectName(QStringLiteral("tabWidget_2Page1"));
-        verticalLayoutWidget = new QWidget(tabWidget_2Page1);
+        tabWidget_tabs = new QTabWidget(centralWidget);
+        tabWidget_tabs->setObjectName(QStringLiteral("tabWidget_tabs"));
+        tabWidget_tabs->setGeometry(QRect(10, 10, 621, 391));
+        tab_connect = new QWidget();
+        tab_connect->setObjectName(QStringLiteral("tab_connect"));
+        pushButton_connect = new QPushButton(tab_connect);
+        pushButton_connect->setObjectName(QStringLiteral("pushButton_connect"));
+        pushButton_connect->setGeometry(QRect(30, 170, 221, 29));
+        pushButton_disconnect = new QPushButton(tab_connect);
+        pushButton_disconnect->setObjectName(QStringLiteral("pushButton_disconnect"));
+        pushButton_disconnect->setGeometry(QRect(30, 220, 221, 29));
+        label_connection_state = new QLabel(tab_connect);
+        label_connection_state->setObjectName(QStringLiteral("label_connection_state"));
+        label_connection_state->setGeometry(QRect(40, 290, 181, 21));
+        lineEdit_IP = new QLineEdit(tab_connect);
+        lineEdit_IP->setObjectName(QStringLiteral("lineEdit_IP"));
+        lineEdit_IP->setGeometry(QRect(120, 60, 131, 29));
+        label_IP = new QLabel(tab_connect);
+        label_IP->setObjectName(QStringLiteral("label_IP"));
+        label_IP->setGeometry(QRect(30, 60, 81, 21));
+        lineEdit_port = new QLineEdit(tab_connect);
+        lineEdit_port->setObjectName(QStringLiteral("lineEdit_port"));
+        lineEdit_port->setGeometry(QRect(120, 100, 51, 29));
+        label_port = new QLabel(tab_connect);
+        label_port->setObjectName(QStringLiteral("label_port"));
+        label_port->setGeometry(QRect(30, 100, 81, 21));
+        tabWidget_tabs->addTab(tab_connect, QString());
+        tab_login = new QWidget();
+        tab_login->setObjectName(QStringLiteral("tab_login"));
+        label_picture = new QLabel(tab_login);
+        label_picture->setObjectName(QStringLiteral("label_picture"));
+        label_picture->setGeometry(QRect(160, 20, 131, 111));
+        lineEdit_login = new QLineEdit(tab_login);
+        lineEdit_login->setObjectName(QStringLiteral("lineEdit_login"));
+        lineEdit_login->setGeometry(QRect(30, 60, 113, 29));
+        lineEdit_password = new QLineEdit(tab_login);
+        lineEdit_password->setObjectName(QStringLiteral("lineEdit_password"));
+        lineEdit_password->setGeometry(QRect(30, 100, 113, 29));
+        lineEdit_password->setEchoMode(QLineEdit::Password);
+        pushButton_login = new QPushButton(tab_login);
+        pushButton_login->setObjectName(QStringLiteral("pushButton_login"));
+        pushButton_login->setGeometry(QRect(30, 160, 201, 29));
+        pushButton_signup = new QPushButton(tab_login);
+        pushButton_signup->setObjectName(QStringLiteral("pushButton_signup"));
+        pushButton_signup->setGeometry(QRect(30, 210, 201, 29));
+        tabWidget_tabs->addTab(tab_login, QString());
+        tab_rooms = new QWidget();
+        tab_rooms->setObjectName(QStringLiteral("tab_rooms"));
+        verticalLayoutWidget = new QWidget(tab_rooms);
         verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(250, 10, 160, 131));
+        verticalLayoutWidget->setGeometry(QRect(350, 10, 201, 128));
         verticalLayout = new QVBoxLayout(verticalLayoutWidget);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        buttonNewRoom = new QPushButton(verticalLayoutWidget);
-        buttonNewRoom->setObjectName(QStringLiteral("buttonNewRoom"));
+        pushButton_enter_room = new QPushButton(verticalLayoutWidget);
+        pushButton_enter_room->setObjectName(QStringLiteral("pushButton_enter_room"));
 
-        verticalLayout->addWidget(buttonNewRoom);
+        verticalLayout->addWidget(pushButton_enter_room);
 
-        buttonEnterRoom = new QPushButton(verticalLayoutWidget);
-        buttonEnterRoom->setObjectName(QStringLiteral("buttonEnterRoom"));
+        pushButton_delete_room = new QPushButton(verticalLayoutWidget);
+        pushButton_delete_room->setObjectName(QStringLiteral("pushButton_delete_room"));
 
-        verticalLayout->addWidget(buttonEnterRoom);
+        verticalLayout->addWidget(pushButton_delete_room);
 
-        pushButton_3 = new QPushButton(verticalLayoutWidget);
-        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+        pushButton_refresh = new QPushButton(verticalLayoutWidget);
+        pushButton_refresh->setObjectName(QStringLiteral("pushButton_refresh"));
 
-        verticalLayout->addWidget(pushButton_3);
+        verticalLayout->addWidget(pushButton_refresh);
 
-        buttonEnterRoom->raise();
-        buttonNewRoom->raise();
-        pushButton_3->raise();
-        listWidget = new QListWidget(tabWidget_2Page1);
-        listWidget->setObjectName(QStringLiteral("listWidget"));
-        listWidget->setGeometry(QRect(10, 10, 211, 191));
-        label_3 = new QLabel(tabWidget_2Page1);
-        label_3->setObjectName(QStringLiteral("label_3"));
-        label_3->setGeometry(QRect(250, 160, 171, 31));
-        tabWidget_2->addTab(tabWidget_2Page1, QString());
-        tab = new QWidget();
-        tab->setObjectName(QStringLiteral("tab"));
-        listWidget_2 = new QListWidget(tab);
-        listWidget_2->setObjectName(QStringLiteral("listWidget_2"));
-        listWidget_2->setGeometry(QRect(10, 10, 221, 191));
-        tabWidget_2->addTab(tab, QString());
-        tab_2 = new QWidget();
-        tab_2->setObjectName(QStringLiteral("tab_2"));
-        label_4 = new QLabel(tab_2);
-        label_4->setObjectName(QStringLiteral("label_4"));
-        label_4->setGeometry(QRect(20, 20, 81, 21));
-        label_5 = new QLabel(tab_2);
-        label_5->setObjectName(QStringLiteral("label_5"));
-        label_5->setGeometry(QRect(270, 20, 131, 111));
-        lineEdit_login = new QLineEdit(tab_2);
-        lineEdit_login->setObjectName(QStringLiteral("lineEdit_login"));
-        lineEdit_login->setGeometry(QRect(30, 60, 113, 29));
-        lineEdit_password = new QLineEdit(tab_2);
-        lineEdit_password->setObjectName(QStringLiteral("lineEdit_password"));
-        lineEdit_password->setGeometry(QRect(30, 100, 113, 29));
-        lineEdit_password->setEchoMode(QLineEdit::Password);
-        pushButton_2 = new QPushButton(tab_2);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
-        pushButton_2->setGeometry(QRect(40, 150, 85, 29));
-        tabWidget_2->addTab(tab_2, QString());
-        buttonSend = new QPushButton(centralWidget);
-        buttonSend->setObjectName(QStringLiteral("buttonSend"));
-        buttonSend->setGeometry(QRect(50, 350, 86, 29));
-        textBrowser = new QTextBrowser(centralWidget);
-        textBrowser->setObjectName(QStringLiteral("textBrowser"));
-        textBrowser->setGeometry(QRect(310, 280, 341, 111));
-        label = new QLabel(centralWidget);
-        label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(20, 260, 191, 21));
-        label_2 = new QLabel(centralWidget);
-        label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(320, 250, 161, 21));
-        lineEdit = new QLineEdit(centralWidget);
-        lineEdit->setObjectName(QStringLiteral("lineEdit"));
-        lineEdit->setGeometry(QRect(20, 310, 211, 31));
-        buttonConnect = new QPushButton(centralWidget);
-        buttonConnect->setObjectName(QStringLiteral("buttonConnect"));
-        buttonConnect->setGeometry(QRect(500, 70, 171, 29));
-        buttonDisconnect = new QPushButton(centralWidget);
-        buttonDisconnect->setObjectName(QStringLiteral("buttonDisconnect"));
-        buttonDisconnect->setGeometry(QRect(500, 120, 171, 29));
-        labelConnection = new QLabel(centralWidget);
-        labelConnection->setObjectName(QStringLiteral("labelConnection"));
-        labelConnection->setGeometry(QRect(470, 180, 181, 21));
-        pushButton = new QPushButton(centralWidget);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setGeometry(QRect(500, 20, 171, 31));
+        label_choose = new QLabel(verticalLayoutWidget);
+        label_choose->setObjectName(QStringLiteral("label_choose"));
+
+        verticalLayout->addWidget(label_choose);
+
+        listWidget_rooms = new QListWidget(tab_rooms);
+        listWidget_rooms->setObjectName(QStringLiteral("listWidget_rooms"));
+        listWidget_rooms->setGeometry(QRect(10, 10, 301, 321));
+        verticalLayoutWidget_2 = new QWidget(tab_rooms);
+        verticalLayoutWidget_2->setObjectName(QStringLiteral("verticalLayoutWidget_2"));
+        verticalLayoutWidget_2->setGeometry(QRect(350, 170, 201, 66));
+        verticalLayout_2 = new QVBoxLayout(verticalLayoutWidget_2);
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
+        lineEdit_new_room = new QLineEdit(verticalLayoutWidget_2);
+        lineEdit_new_room->setObjectName(QStringLiteral("lineEdit_new_room"));
+
+        verticalLayout_2->addWidget(lineEdit_new_room);
+
+        pushButton_new_room = new QPushButton(verticalLayoutWidget_2);
+        pushButton_new_room->setObjectName(QStringLiteral("pushButton_new_room"));
+
+        verticalLayout_2->addWidget(pushButton_new_room);
+
+        tabWidget_tabs->addTab(tab_rooms, QString());
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -174,7 +182,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget_2->setCurrentIndex(0);
+        tabWidget_tabs->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -183,25 +191,26 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "IRC chat", 0));
-        buttonNewRoom->setText(QApplication::translate("MainWindow", "Utw\303\263rz nowy pok\303\263j", 0));
-        buttonEnterRoom->setText(QApplication::translate("MainWindow", "Wejd\305\272 do pokoju", 0));
-        pushButton_3->setText(QApplication::translate("MainWindow", "Usun pokoj", 0));
-        label_3->setText(QApplication::translate("MainWindow", "Wybrano:", 0));
-        tabWidget_2->setTabText(tabWidget_2->indexOf(tabWidget_2Page1), QApplication::translate("MainWindow", "Pokoje", 0));
-        tabWidget_2->setTabText(tabWidget_2->indexOf(tab), QApplication::translate("MainWindow", "U\305\274ytkownicy", 0));
-        label_4->setText(QApplication::translate("MainWindow", "Tw\303\263j profil", 0));
-        label_5->setText(QString());
+        pushButton_connect->setText(QApplication::translate("MainWindow", "Po\305\202\304\205cz z serwerem", 0));
+        pushButton_disconnect->setText(QApplication::translate("MainWindow", "Roz\305\202\304\205cz z serwerem", 0));
+        label_connection_state->setText(QApplication::translate("MainWindow", "Stan po\305\202\304\205czenia: ", 0));
+        lineEdit_IP->setText(QApplication::translate("MainWindow", "127.0.0.1", 0));
+        label_IP->setText(QApplication::translate("MainWindow", "IP serwera:", 0));
+        lineEdit_port->setText(QApplication::translate("MainWindow", "1234", 0));
+        label_port->setText(QApplication::translate("MainWindow", "port:", 0));
+        tabWidget_tabs->setTabText(tabWidget_tabs->indexOf(tab_connect), QApplication::translate("MainWindow", "Po\305\202\304\205cz z serwerem", 0));
+        label_picture->setText(QString());
         lineEdit_login->setText(QApplication::translate("MainWindow", "login", 0));
         lineEdit_password->setText(QApplication::translate("MainWindow", "password", 0));
-        pushButton_2->setText(QApplication::translate("MainWindow", "Zaloguj", 0));
-        tabWidget_2->setTabText(tabWidget_2->indexOf(tab_2), QApplication::translate("MainWindow", "Profil", 0));
-        buttonSend->setText(QApplication::translate("MainWindow", "Wy\305\233lij", 0));
-        label->setText(QApplication::translate("MainWindow", "Wprowad\305\272 tekst wiadomo\305\233ci", 0));
-        label_2->setText(QApplication::translate("MainWindow", "Czat ka\305\274dy z ka\305\274dym", 0));
-        buttonConnect->setText(QApplication::translate("MainWindow", "Po\305\202\304\205cz z serwerem", 0));
-        buttonDisconnect->setText(QApplication::translate("MainWindow", "Roz\305\202\304\205cz z serwerem", 0));
-        labelConnection->setText(QApplication::translate("MainWindow", "Stan po\305\202\304\205czenia: ", 0));
-        pushButton->setText(QApplication::translate("MainWindow", "Od\305\233wie\305\274", 0));
+        pushButton_login->setText(QApplication::translate("MainWindow", "Zaloguj", 0));
+        pushButton_signup->setText(QApplication::translate("MainWindow", "Utw\303\263rz nowe konto", 0));
+        tabWidget_tabs->setTabText(tabWidget_tabs->indexOf(tab_login), QApplication::translate("MainWindow", "Zaloguj", 0));
+        pushButton_enter_room->setText(QApplication::translate("MainWindow", "Wejd\305\272 do pokoju", 0));
+        pushButton_delete_room->setText(QApplication::translate("MainWindow", "Usun pokoj", 0));
+        pushButton_refresh->setText(QApplication::translate("MainWindow", "Od\305\233wie\305\274 liste", 0));
+        label_choose->setText(QApplication::translate("MainWindow", "Wybrano:", 0));
+        pushButton_new_room->setText(QApplication::translate("MainWindow", "Utw\303\263rz nowy pok\303\263j", 0));
+        tabWidget_tabs->setTabText(tabWidget_tabs->indexOf(tab_rooms), QApplication::translate("MainWindow", "Pokoje", 0));
     } // retranslateUi
 
 };

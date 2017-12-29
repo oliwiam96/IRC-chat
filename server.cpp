@@ -26,8 +26,6 @@ typedef struct thread_client_data_t{
 	int fd; /* Connection file descriptor */
         char *name;
 
-
-
 } t_client;
 
 
@@ -173,27 +171,39 @@ void wykonaj_polecenie(char* msg, t_client * th_data)
             printf("nazwa pokoju to: %s\n", pch);
             char roomName[50];
             strcpy(roomName, pch);
-            char msg[500];
-            strcpy(msg, "\\MSG ");
-            strcat(msg, roomName);
-            strcat(msg, " ");
-            strcat(msg, th_data->name);
+            char msg2[500];
+            strcpy(msg2, "\\MSG ");
+            strcat(msg2, roomName);
+            strcat(msg2, " ");
+            strcat(msg2, th_data->name);
+
+
             pch = strtok(NULL, " ");
-            strcat(msg, pch);
+            while(pch != NULL)
+            {
+                strcat(msg2, " ");
+                strcat(msg2, pch);
+                pch = strtok(NULL, " ");
+            }
+
+            //strcat(msg2, " ");
+            //pch = strtok(NULL, " "); // UWAGA TU BYL BLAD, NIE DO KOLEJNEJ SPACJI, A RESZTE
+            //strcat(msg2, pch);
+            strcat(msg2, "\n"); // UWAGA ZMIANA- CZY DOBRZE?
             int n = db->getNumberOfUsersInRoom(roomName);
             int *usersConnfdInRoom = db->getArrayofAllUsersConnfdInRoom(roomName);
             for(int i = 0; i < n; i++)
             {
                 if(usersConnfdInRoom[i] != th_data->fd) //nie pisz sam do siebie
                 {
-                    write_to_client(msg, usersConnfdInRoom[i]);
+                    printf("Pisze do klienta wiadomosc o tresci: %s\n", msg2);
+                    write_to_client(msg2, usersConnfdInRoom[i]);
                 }
             }
-            db->leaveRoom(th_data->name, roomName);
         }
         else
         {
-            printf("NIEZNANE POLECENIE");
+            printf("NIEZNANE POLECENIE\n");
             printf("%s\n", pch);
 
         }
@@ -236,7 +246,7 @@ void *ThreadBehavior(void *t_data)
 	t_client *th_data = (t_client *)t_data;
     
 	bool stop = false;
-	int buffer_length = 50;
+        int buffer_length = 500;
 	char buffer[buffer_length];
 	int przesuniecie = 0;
 	char *lewy;
@@ -255,22 +265,6 @@ void *ThreadBehavior(void *t_data)
 				strcpy(kopia_wykonaj, lewy);
 				
                                 wykonaj_polecenie(kopia_wykonaj, th_data);
-                                /*for(int i = 0; i < MAX_CLIENTS; i++)
-				{
-					if(!clients[i])
-						break;
-					else if(clients[i] != th_data)
-					{
-						char kopia[buffer_length];
-						strcpy(kopia, lewy);
-						kopia[strlen(lewy)] = '\n'; //czy to jest ok? :<
-						write(clients[i]->fd, kopia, strlen(lewy)+1);
-                                                printf("fd wynosi: %d\n", clients[i]->fd);
-						//if(strcmp(lewy, "PAPA") == 0) // na razie to nie dziala
-							//stop = true;
-					}
-				
-                                }*/
 				sklejanie(prawy, &lewy, &prawy);
 			}
 			if(prawy != NULL)
@@ -305,7 +299,7 @@ void handleConnection(int connection_socket_descriptor) {
     //dane, które zostaną przekazane do wątku
     //TODO w odpowiednim miejscu zwolnienie pamięci- czy dobrze, ze pod koniec watku?
     //t_typ *t_data =(t_typ*) malloc(sizeof(t_typ));
-	t_client *client_data = (t_client*) malloc(sizeof(t_client));
+    t_client *client_data = (t_client*) malloc(sizeof(t_client));
 	
     
     // wypełnienie pól struktury
