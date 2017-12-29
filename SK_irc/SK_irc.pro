@@ -29,11 +29,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     room.cpp \
     user.cpp \
-    ircchat.cpp
+    ircchat.cpp \
+    server.cpp
 
 HEADERS  += mainwindow.h \
     room.h \
     user.h \
-    ircchat.h
+    ircchat.h \
+    server.h
 
 FORMS    += mainwindow.ui

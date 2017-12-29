@@ -8,7 +8,6 @@ class User
 public:
     User();
 private:
-    int id;
     std::string name;
 };
 

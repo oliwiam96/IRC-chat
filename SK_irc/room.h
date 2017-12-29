@@ -8,9 +8,7 @@ class Room
 public:
     Room();
 private:
-    int id;
     std::string name;
-    User *admin;
 };
 
 #endif // ROOM_H

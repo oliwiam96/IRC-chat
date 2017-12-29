@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <iostream>
- #include <QScrollBar>
+#include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete tcpSocket;
 }
 void MainWindow::readData()
 {
@@ -60,9 +61,13 @@ void MainWindow::on_buttonEnterRoom_clicked()
 {
     // Get the pointer to the currently selected item.
     QListWidgetItem *item = ui->listWidget->currentItem();
+
     ui->label_3->setText("Wybrano: " + item->text());
 
 }
+
+//ui->listWidget->removeItemWidget();
+
 
 void MainWindow::on_buttonSend_clicked()
 {
@@ -98,5 +103,14 @@ void MainWindow::on_pushButton_2_clicked()
     wiadomosc_logowania += ui->lineEdit_login->text() + " ";
     wiadomosc_logowania += ui->lineEdit_password->text() + ";";
     tcpSocket->write(wiadomosc_logowania.toLocal8Bit());
+
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    QListWidgetItem *item = ui->listWidget->currentItem();
+    ///ui->listWidget->clear();
+    delete ui->listWidget->takeItem(ui->listWidget->row(item));
+
 
 }

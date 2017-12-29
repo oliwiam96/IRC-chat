@@ -39,6 +39,7 @@ public:
     QVBoxLayout *verticalLayout;
     QPushButton *buttonNewRoom;
     QPushButton *buttonEnterRoom;
+    QPushButton *pushButton_3;
     QListWidget *listWidget;
     QLabel *label_3;
     QWidget *tab;
@@ -76,7 +77,7 @@ public:
         tabWidget_2Page1->setObjectName(QStringLiteral("tabWidget_2Page1"));
         verticalLayoutWidget = new QWidget(tabWidget_2Page1);
         verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(250, 10, 160, 101));
+        verticalLayoutWidget->setGeometry(QRect(250, 10, 160, 131));
         verticalLayout = new QVBoxLayout(verticalLayoutWidget);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
@@ -92,14 +93,20 @@ public:
 
         verticalLayout->addWidget(buttonEnterRoom);
 
+        pushButton_3 = new QPushButton(verticalLayoutWidget);
+        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+
+        verticalLayout->addWidget(pushButton_3);
+
         buttonEnterRoom->raise();
         buttonNewRoom->raise();
+        pushButton_3->raise();
         listWidget = new QListWidget(tabWidget_2Page1);
         listWidget->setObjectName(QStringLiteral("listWidget"));
         listWidget->setGeometry(QRect(10, 10, 211, 191));
         label_3 = new QLabel(tabWidget_2Page1);
         label_3->setObjectName(QStringLiteral("label_3"));
-        label_3->setGeometry(QRect(240, 140, 171, 31));
+        label_3->setGeometry(QRect(250, 160, 171, 31));
         tabWidget_2->addTab(tabWidget_2Page1, QString());
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
@@ -178,6 +185,7 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "IRC chat", 0));
         buttonNewRoom->setText(QApplication::translate("MainWindow", "Utw\303\263rz nowy pok\303\263j", 0));
         buttonEnterRoom->setText(QApplication::translate("MainWindow", "Wejd\305\272 do pokoju", 0));
+        pushButton_3->setText(QApplication::translate("MainWindow", "Usun pokoj", 0));
         label_3->setText(QApplication::translate("MainWindow", "Wybrano:", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tabWidget_2Page1), QApplication::translate("MainWindow", "Pokoje", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab), QApplication::translate("MainWindow", "U\305\274ytkownicy", 0));

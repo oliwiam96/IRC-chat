@@ -36,7 +36,7 @@
         <x>250</x>
         <y>10</y>
         <width>160</width>
-        <height>101</height>
+        <height>131</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -54,9 +54,17 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="text">
+          <string>Usun pokoj</string>
+         </property>
+        </widget>
+       </item>
       </layout>
       <zorder>buttonEnterRoom</zorder>
       <zorder>buttonNewRoom</zorder>
+      <zorder>pushButton_3</zorder>
      </widget>
      <widget class="QListWidget" name="listWidget">
       <property name="geometry">
@@ -71,8 +79,8 @@
      <widget class="QLabel" name="label_3">
       <property name="geometry">
        <rect>
-        <x>240</x>
-        <y>140</y>
+        <x>250</x>
+        <y>160</y>
         <width>171</width>
         <height>31</height>
        </rect>
