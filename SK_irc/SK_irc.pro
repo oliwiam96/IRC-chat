@@ -28,11 +28,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         mainwindow.cpp \
     server.cpp \
-    chatroom.cpp
+    chatroom.cpp \
+    hashcolour.cpp
 
 HEADERS  += mainwindow.h \
     server.h \
-    chatroom.h
+    chatroom.h \
+    hashcolour.h
 
 FORMS    += mainwindow.ui \
     chatroom.ui

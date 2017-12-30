@@ -43,13 +43,13 @@ public:
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         textBrowser = new QTextBrowser(centralwidget);
         textBrowser->setObjectName(QStringLiteral("textBrowser"));
-        textBrowser->setGeometry(QRect(10, 10, 511, 181));
+        textBrowser->setGeometry(QRect(10, 10, 511, 191));
         lineEdit = new QLineEdit(centralwidget);
         lineEdit->setObjectName(QStringLiteral("lineEdit"));
-        lineEdit->setGeometry(QRect(30, 220, 361, 29));
+        lineEdit->setGeometry(QRect(30, 230, 361, 29));
         pushButtonSend = new QPushButton(centralwidget);
         pushButtonSend->setObjectName(QStringLiteral("pushButtonSend"));
-        pushButtonSend->setGeometry(QRect(410, 220, 85, 29));
+        pushButtonSend->setGeometry(QRect(410, 230, 85, 29));
         ChatRoom->setCentralWidget(centralwidget);
         menubar = new QMenuBar(ChatRoom);
         menubar->setObjectName(QStringLiteral("menubar"));

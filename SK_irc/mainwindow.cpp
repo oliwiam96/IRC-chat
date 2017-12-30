@@ -29,14 +29,6 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     ui->label_picture->setPixmap(myPixmapForNow);
 
-    for(int i = 0; i < 15; i++)
-    {
-       // ui->listWidget->addItem("Pokój " + QString::number(i));
-        ui->listWidget_rooms->addItem("Pokoj " + QString::number(i));
-
-    }
-
-
 }
 
 MainWindow::~MainWindow()
