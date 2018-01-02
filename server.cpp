@@ -31,8 +31,6 @@ typedef struct thread_client_data_t{
 
 Database *db;
 
-pthread_mutex_t	mutexClients;  // mutex for critical section (mutex dla kazdego klienta, zeby kilka watkow nie pisało do niego równoczesnie)
-
 void write_to_client(char *msg, int connfd)
 {
     write(connfd, msg, strlen(msg));
@@ -45,8 +43,6 @@ void wykonaj_polecenie(char* msg, t_client * th_data)
 	char *pch; //a pointer to the beginning of the token
 	printf ("Splitting string \"%s\" into tokens:\n", msg);
 	pch = strtok(msg, " ");
-        pthread_mutex_lock(&mutexClients);// nie chcemy, że paru klientów pisało do serwa równocześnie
-
 	/** MOZLIWE WIADOMOSCI OD KLIENTA DO SERWERA **/
 	if(!strcmp(pch, "\\LOGIN"))
 	{
@@ -212,7 +208,7 @@ void wykonaj_polecenie(char* msg, t_client * th_data)
 
         }
 
-        pthread_mutex_unlock(&mutexClients);
+
 }
 void sklejanie(char* buffer, char** lewy, char** prawy)
 {
@@ -324,14 +320,12 @@ int main(int argc, char* argv[])
         printf("Serwer wystartowany\n");
         char fileName[] = "test.db";
         db = new Database(fileName);
-        mutexClients = PTHREAD_MUTEX_INITIALIZER;
 	int server_socket_descriptor; // to samo co listenfd
 	int connection_socket_descriptor; // to samo co connfd
 	int bind_result;
 	int listen_result;
 	char reuse_addr_val = 1;
 	struct sockaddr_in server_address;
-
 
 	//inicjalizacja gniazda serwera
 
@@ -381,7 +375,6 @@ int main(int argc, char* argv[])
 	    handleConnection(connection_socket_descriptor);
 	}
 
-        pthread_mutex_destroy(&mutexClients);//usunięcie mutexa dla klientów
 	close(server_socket_descriptor);
 	return(0);
 }
