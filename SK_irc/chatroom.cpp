@@ -3,13 +3,16 @@
 #include "hashcolour.h"
 
 #include <QScrollBar>
+#include <QCloseEvent>
 #include <string.h>
+#include <QMessageBox>
 using namespace std;
 
 ChatRoom::ChatRoom(QWidget *parent, QString roomName, Server *server) :
     QMainWindow(parent),
     ui(new Ui::ChatRoom)
 {
+    qDebug() << "Konstruktor ChatRoomu";
     ui->setupUi(this);
     this->server = server;
     setRoomName(roomName);
@@ -23,6 +26,7 @@ ChatRoom::ChatRoom(QWidget *parent, QString roomName, Server *server) :
 
 ChatRoom::~ChatRoom()
 {
+    qDebug() << "Destruktor ChatRoomu";
     delete ui;
 }
 
@@ -74,5 +78,22 @@ void ChatRoom::receiveMsg(QString userName, QString msg)
     QScrollBar *sb = ui->textBrowser->verticalScrollBar();
     sb->setValue(sb->maximum());
     delete hashcolour;
+}
+
+
+
+void ChatRoom::closeEvent (QCloseEvent *event)
+{
+    QMessageBox::StandardButton resBtn = QMessageBox::question( this, "Wyjście z czatu",
+                                                                tr("Czy pewno chcesz opuścić czat?\n"),
+                                                                QMessageBox::No | QMessageBox::Yes,
+                                                                QMessageBox::Yes);
+    if (resBtn != QMessageBox::Yes) {
+        event->ignore();
+    } else {
+        event->accept();
+    }
+    server->leaveRoom(roomName);
+    qDebug() << "Close event - zamykanie okna";
 }
 

@@ -18,9 +18,12 @@ public:
     QString getRoomName();
     void setRoomName(QString roomName);
     void receiveMsg(QString userName, QString msg);
+    void closeEvent (QCloseEvent *event);
 
 private slots:
     void on_pushButtonSend_clicked();
+
+
 
 private:
     Ui::ChatRoom *ui;

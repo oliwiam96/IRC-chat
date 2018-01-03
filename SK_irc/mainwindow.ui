@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab_connect">
      <attribute name="title">
@@ -103,6 +103,9 @@
         <width>51</width>
         <height>29</height>
        </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
       </property>
       <property name="text">
        <string>1234</string>
@@ -321,7 +324,7 @@
   </connection>
   <connection>
    <sender>listWidget_rooms</sender>
-   <signal>itemEntered(QListWidgetItem*)</signal>
+   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
    <receiver>pushButton_enter_room</receiver>
    <slot>click()</slot>
    <hints>

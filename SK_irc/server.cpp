@@ -13,9 +13,9 @@ Server::~Server()
     delete tcpSocket;
 }
 
-void Server::connectToServer()
+void Server::connectToServer(QString ipAddress, qint32 portAddress)
 {
-    tcpSocket->connectToHost("127.0.0.1", 1234);
+    tcpSocket->connectToHost(ipAddress, portAddress);
 }
 
 void Server::disconnectFromServer()

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <QScrollBar>
 #include <QMessageBox>
+#include <QCloseEvent>
 
 #include "server.h"
 
@@ -98,7 +99,10 @@ void MainWindow::deleteAllRoomsWindows()
 void MainWindow::on_pushButton_connect_clicked()
 {
     ui->label_connection_state->setText("Otwarto połączenie!");
-    server->connectToServer();
+    qint32 port = ui->lineEdit_port->text().toInt();
+    server->connectToServer(ui->lineEdit_IP->text(), port);
+    qDebug() << ui->lineEdit_IP->text();
+    qDebug() << port;
     QMessageBox::information(0, "Komunikat", "Otwarto polaczenie");
 }
 
@@ -151,4 +155,19 @@ void MainWindow::on_pushButton_refresh_clicked()
 void MainWindow::on_pushButton_new_room_clicked()
 {
     server->createRoom(ui->lineEdit_new_room->text());
+}
+
+void MainWindow::closeEvent (QCloseEvent *event)
+{
+    QMessageBox::StandardButton resBtn = QMessageBox::question( this, "Potwierdzenie zamknięcia aplikacji",
+                                                                tr("Czy pewno chcesz opuścić komunikator?\n"),
+                                                                QMessageBox::No | QMessageBox::Yes,
+                                                                QMessageBox::Yes);
+    if (resBtn != QMessageBox::Yes) {
+        event->ignore();
+    } else {
+        event->accept();
+        qDebug() << "Close event - zamykanie komunikatora";
+    }
+//    server->leaveRoom(roomName);
 }

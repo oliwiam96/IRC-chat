@@ -20,6 +20,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+
 private slots:
 
     void on_pushButton_connect_clicked();
@@ -52,6 +53,7 @@ private:
     ChatRoom* getRoomWindow(QString roomName);
     void deleteRoomWindow(QString roomName);
     void deleteAllRoomsWindows();
+    void closeEvent (QCloseEvent *event);
 };
 
 #endif // MAINWINDOW_H
