@@ -53,7 +53,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Rozłącz z serwerem</string>
+       <string>Rozłącz z serwerem / Wyloguj</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_connection_state">

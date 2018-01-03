@@ -97,9 +97,10 @@ void wykonaj_polecenie(char* msg, t_client * th_data)
         }
         else if(!strcmp(pch, "\\LOGOUT"))
         {
-            printf("WYLOGOWANIE\n");
-            db->logout(th_data->name);
 
+            db->logout(th_data->name);
+            printf("WYLOGOWANIE\n");
+            free(th_data);
             // TODO ZAKONCZYC WATEK
         }
         else if(!strcmp(pch, "\\SHOWROOMS"))

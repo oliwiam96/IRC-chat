@@ -98,11 +98,11 @@ void MainWindow::deleteAllRoomsWindows()
 
 void MainWindow::on_pushButton_connect_clicked()
 {
-    ui->label_connection_state->setText("Otwarto połączenie!");
     qint32 port = ui->lineEdit_port->text().toInt();
     server->connectToServer(ui->lineEdit_IP->text(), port);
     qDebug() << ui->lineEdit_IP->text();
     qDebug() << port;
+    ui->label_connection_state->setText("Otwarto połączenie!");
     QMessageBox::information(0, "Komunikat", "Otwarto polaczenie");
 }
 
@@ -166,6 +166,7 @@ void MainWindow::closeEvent (QCloseEvent *event)
     if (resBtn != QMessageBox::Yes) {
         event->ignore();
     } else {
+        server->logout();
         event->accept();
         qDebug() << "Close event - zamykanie komunikatora";
     }

@@ -20,6 +20,7 @@ void Server::connectToServer(QString ipAddress, qint32 portAddress)
 
 void Server::disconnectFromServer()
 {
+    this->logout();
     tcpSocket->disconnectFromHost();
 }
 
