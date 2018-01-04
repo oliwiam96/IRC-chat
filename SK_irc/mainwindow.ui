@@ -53,7 +53,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Rozłącz z serwerem</string>
+       <string>Rozłącz z serwerem / Wyloguj</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_connection_state">
@@ -103,6 +103,9 @@
         <width>51</width>
         <height>29</height>
        </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
       </property>
       <property name="text">
        <string>1234</string>
@@ -253,7 +256,7 @@
       <property name="geometry">
        <rect>
         <x>350</x>
-        <y>170</y>
+        <y>230</y>
         <width>201</width>
         <height>66</height>
        </rect>
@@ -266,6 +269,12 @@
         <widget class="QPushButton" name="pushButton_new_room">
          <property name="text">
           <string>Utwórz nowy pokój</string>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
+         <property name="default">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -280,7 +289,7 @@
      <x>0</x>
      <y>0</y>
      <width>703</width>
-     <height>26</height>
+     <height>19</height>
     </rect>
    </property>
   </widget>
@@ -296,5 +305,38 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>lineEdit_new_room</sender>
+   <signal>returnPressed()</signal>
+   <receiver>pushButton_new_room</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>462</x>
+     <y>317</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>462</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>listWidget_rooms</sender>
+   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
+   <receiver>pushButton_enter_room</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>172</x>
+     <y>242</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>462</x>
+     <y>93</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

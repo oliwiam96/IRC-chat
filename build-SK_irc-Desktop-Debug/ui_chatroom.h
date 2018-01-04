@@ -38,7 +38,7 @@ public:
     {
         if (ChatRoom->objectName().isEmpty())
             ChatRoom->setObjectName(QStringLiteral("ChatRoom"));
-        ChatRoom->resize(539, 326);
+        ChatRoom->resize(539, 306);
         centralwidget = new QWidget(ChatRoom);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         textBrowser = new QTextBrowser(centralwidget);
@@ -47,19 +47,23 @@ public:
         lineEdit = new QLineEdit(centralwidget);
         lineEdit->setObjectName(QStringLiteral("lineEdit"));
         lineEdit->setGeometry(QRect(30, 230, 361, 29));
+        lineEdit->setClearButtonEnabled(false);
         pushButtonSend = new QPushButton(centralwidget);
         pushButtonSend->setObjectName(QStringLiteral("pushButtonSend"));
         pushButtonSend->setGeometry(QRect(410, 230, 85, 29));
+        pushButtonSend->setAutoDefault(true);
+        pushButtonSend->setDefault(false);
         ChatRoom->setCentralWidget(centralwidget);
         menubar = new QMenuBar(ChatRoom);
         menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 539, 26));
+        menubar->setGeometry(QRect(0, 0, 539, 19));
         ChatRoom->setMenuBar(menubar);
         statusbar = new QStatusBar(ChatRoom);
         statusbar->setObjectName(QStringLiteral("statusbar"));
         ChatRoom->setStatusBar(statusbar);
 
         retranslateUi(ChatRoom);
+        QObject::connect(lineEdit, SIGNAL(returnPressed()), pushButtonSend, SLOT(click()));
 
         QMetaObject::connectSlotsByName(ChatRoom);
     } // setupUi

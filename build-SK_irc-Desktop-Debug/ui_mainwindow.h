@@ -93,6 +93,7 @@ public:
         lineEdit_port = new QLineEdit(tab_connect);
         lineEdit_port->setObjectName(QStringLiteral("lineEdit_port"));
         lineEdit_port->setGeometry(QRect(120, 100, 51, 29));
+        lineEdit_port->setAutoFillBackground(false);
         label_port = new QLabel(tab_connect);
         label_port->setObjectName(QStringLiteral("label_port"));
         label_port->setGeometry(QRect(30, 100, 81, 21));
@@ -151,7 +152,7 @@ public:
         listWidget_rooms->setGeometry(QRect(10, 10, 301, 321));
         verticalLayoutWidget_2 = new QWidget(tab_rooms);
         verticalLayoutWidget_2->setObjectName(QStringLiteral("verticalLayoutWidget_2"));
-        verticalLayoutWidget_2->setGeometry(QRect(350, 170, 201, 66));
+        verticalLayoutWidget_2->setGeometry(QRect(350, 230, 201, 66));
         verticalLayout_2 = new QVBoxLayout(verticalLayoutWidget_2);
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -164,6 +165,8 @@ public:
 
         pushButton_new_room = new QPushButton(verticalLayoutWidget_2);
         pushButton_new_room->setObjectName(QStringLiteral("pushButton_new_room"));
+        pushButton_new_room->setAutoDefault(true);
+        pushButton_new_room->setDefault(false);
 
         verticalLayout_2->addWidget(pushButton_new_room);
 
@@ -171,7 +174,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 703, 26));
+        menuBar->setGeometry(QRect(0, 0, 703, 19));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -181,6 +184,8 @@ public:
         MainWindow->setStatusBar(statusBar);
 
         retranslateUi(MainWindow);
+        QObject::connect(lineEdit_new_room, SIGNAL(returnPressed()), pushButton_new_room, SLOT(click()));
+        QObject::connect(listWidget_rooms, SIGNAL(itemDoubleClicked(QListWidgetItem*)), pushButton_enter_room, SLOT(click()));
 
         tabWidget_tabs->setCurrentIndex(0);
 
@@ -192,7 +197,7 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "IRC chat", 0));
         pushButton_connect->setText(QApplication::translate("MainWindow", "Po\305\202\304\205cz z serwerem", 0));
-        pushButton_disconnect->setText(QApplication::translate("MainWindow", "Roz\305\202\304\205cz z serwerem", 0));
+        pushButton_disconnect->setText(QApplication::translate("MainWindow", "Roz\305\202\304\205cz z serwerem / Wyloguj", 0));
         label_connection_state->setText(QApplication::translate("MainWindow", "Stan po\305\202\304\205czenia: ", 0));
         lineEdit_IP->setText(QApplication::translate("MainWindow", "127.0.0.1", 0));
         label_IP->setText(QApplication::translate("MainWindow", "IP serwera:", 0));
