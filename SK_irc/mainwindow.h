@@ -44,10 +44,13 @@ private slots:
     void deleteAllRommsItems();
     void dispalyMsgInRoom(QString roomName, QString userName, QString msg);
 
+    void on_pushButton_close_clicked();
+
 private:
     Ui::MainWindow *ui;
     Server *server;
     QList<ChatRoom*> *rooms;
+    bool is_active_User; // true provided logged in
 
     void addNewRoomWindow(QString roomName);
     ChatRoom* getRoomWindow(QString roomName);

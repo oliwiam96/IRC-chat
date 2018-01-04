@@ -20,7 +20,6 @@ void Server::connectToServer(QString ipAddress, qint32 portAddress)
 
 void Server::disconnectFromServer()
 {
-    this->logout();
     tcpSocket->disconnectFromHost();
 }
 
@@ -116,6 +115,11 @@ void Server::writeToServer(QString msg)
 void Server::updateRoomsList()
 {
     writeToServer("\\SHOWROOMS");
+}
+
+void Server::closeServerProperly() //jest to funkcja bardziej zamykająca i resetująca server, przeprzaszam za nazewnictwo
+{
+    writeToServer("\\CLOSESERVER");
 }
 
 void Server::login(QString name, QString password)

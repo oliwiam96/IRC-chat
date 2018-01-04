@@ -30,6 +30,7 @@ typedef struct thread_client_data_t{
 
 
 Database *db;
+bool is_server_active = true;
 
 void write_to_client(char *msg, int connfd)
 {
@@ -37,7 +38,7 @@ void write_to_client(char *msg, int connfd)
 }
 
 
-void wykonaj_polecenie(char* msg, t_client * th_data)
+void wykonaj_polecenie(char* msg, t_client * th_data, bool& stop)
 {
         printf("Wykonuje polecenie: %s\n", msg);
 	char *pch; //a pointer to the beginning of the token
@@ -100,8 +101,8 @@ void wykonaj_polecenie(char* msg, t_client * th_data)
 
             db->logout(th_data->name);
             printf("WYLOGOWANIE\n");
-            free(th_data);
-            // TODO ZAKONCZYC WATEK
+            stop = true;
+
         }
         else if(!strcmp(pch, "\\SHOWROOMS"))
         {
@@ -115,7 +116,6 @@ void wykonaj_polecenie(char* msg, t_client * th_data)
             write_to_client(answer, th_data->fd);
 
         }
-
         else if(!strcmp(pch, "\\ENTERROOM"))
         {
             printf("WEJDZ DO POKOJU\n");
@@ -202,6 +202,12 @@ void wykonaj_polecenie(char* msg, t_client * th_data)
                 }
             }
         }
+        else if(!strcmp(pch, "\\CLOSESERVER"))
+        {
+            printf("CAŁKOWISTY RESET I ZAMKNIECIE SERVERA\n");
+            is_server_active = false;
+            db->deleteAllUserFromAllRooms();
+        }
         else
         {
             printf("NIEZNANE POLECENIE\n");
@@ -246,16 +252,16 @@ void *ThreadBehavior(void *t_data)
 	pthread_detach(pthread_self());
 	t_client *th_data = (t_client *)t_data;
     
-	bool stop = false;
+        bool stop = false;
         int buffer_length = 500;
 	char buffer[buffer_length];
 	int przesuniecie = 0;
 	char *lewy;
-	char *prawy;
-	do{
+        char *prawy;
+        do{
 
 		int n_odczytane = read(th_data->fd, buffer + przesuniecie, buffer_length-1 - przesuniecie);
-		if(n_odczytane > 0){
+                if(n_odczytane > 0){
 
 			buffer[przesuniecie+n_odczytane] = '\0';
 			printf("%s\n", buffer);
@@ -264,9 +270,10 @@ void *ThreadBehavior(void *t_data)
 			{
 				char kopia_wykonaj[strlen(lewy)];
 				strcpy(kopia_wykonaj, lewy);
-				
-                                wykonaj_polecenie(kopia_wykonaj, th_data);
-				sklejanie(prawy, &lewy, &prawy);
+                                printf("Stop: %d\n", stop);
+                                wykonaj_polecenie(kopia_wykonaj, th_data, stop);
+                                printf("Stop: %d\n", stop);
+                                sklejanie(prawy, &lewy, &prawy);
 			}
 			if(prawy != NULL)
 			{
@@ -278,15 +285,14 @@ void *ThreadBehavior(void *t_data)
 			{
 				przesuniecie = 0;
 			}
-			printf("Przesuniecie: %d\n", przesuniecie);
-			
-			
+                        printf("Przesuniecie: %d\n", przesuniecie);
 		}
-        
-	} while(!stop);
+        } while(!stop);
 
+        printf("Ostateczne zakniecie watku");
 	free(t_data);
-	pthread_exit(NULL);
+        pthread_exit(NULL);
+
 }
 
 //funkcja obsługująca połączenie z nowym klientem
@@ -327,6 +333,7 @@ int main(int argc, char* argv[])
 	int listen_result;
 	char reuse_addr_val = 1;
 	struct sockaddr_in server_address;
+        is_server_active = true;
 
 	//inicjalizacja gniazda serwera
 
@@ -363,19 +370,19 @@ int main(int argc, char* argv[])
 	printf("Listen ok\n");
 
 	// Accept clients
-	while(1)
-	{
-	   connection_socket_descriptor = accept(server_socket_descriptor, NULL, NULL);
-	   if (connection_socket_descriptor < 0)
-	   {
-		   fprintf(stderr, "%s: Błąd przy próbie utworzenia gniazda dla połączenia.\n", argv[0]);
-		   exit(1);
-	   }
-		printf("Mam klienta!\n");
+        while(is_server_active)
+        {
+            connection_socket_descriptor = accept(server_socket_descriptor, NULL, NULL);
+            if (connection_socket_descriptor < 0)
+            {
+                   fprintf(stderr, "%s: Błąd przy próbie utworzenia gniazda dla połączenia.\n", argv[0]);
+                   exit(1);
+            }
+            printf("Mam klienta!\n");
 
-	    handleConnection(connection_socket_descriptor);
+            handleConnection(connection_socket_descriptor);
 	}
-
+        printf("Serwer zamknięty\n");
 	close(server_socket_descriptor);
 	return(0);
 }

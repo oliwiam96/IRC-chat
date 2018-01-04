@@ -13,6 +13,7 @@ class Server : public QObject
 public:
     Server();
     virtual ~Server();
+    void closeServerProperly();
     void connectToServer(QString ipAddress, qint32 portAddress);
     void disconnectFromServer();
     void updateRoomsList();

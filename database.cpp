@@ -389,6 +389,20 @@ void Database::deleteUserFromAllRooms(char *name)
     }
 }
 
+void Database::deleteAllUserFromAllRooms()
+{
+    char *zErrMsg = 0;
+    char sql_delete[80];
+    strcpy(sql_delete, "DELETE FROM USERSINROOMS WHERE 1=1;");
+    int rc = sqlite3_exec(db, sql_delete, callback, 0, &zErrMsg);
+    if( rc != SQLITE_OK ) {
+            fprintf(stderr, "SQL error: %s\n", zErrMsg);
+            sqlite3_free(zErrMsg);
+    } else {
+            //fprintf(stdout, "Operation \"delete user from UsersInRooms\" done successfully\n");
+    }
+}
+
 
 void Database::logout(char *name)
 {

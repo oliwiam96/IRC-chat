@@ -4,6 +4,7 @@
 #include <QScrollBar>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <unistd.h>
 
 #include "server.h"
 
@@ -14,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 
     rooms = new QList<ChatRoom*>();
+    is_active_User = false; //przy otwarciu okna uzytkownik nie jest zalogowany
     QObject::connect(server, SIGNAL(roomNameReceived(QString)),
                          this, SLOT(addRoomItem(QString)));
 
@@ -100,20 +102,22 @@ void MainWindow::on_pushButton_connect_clicked()
 {
     qint32 port = ui->lineEdit_port->text().toInt();
     server->connectToServer(ui->lineEdit_IP->text(), port);
-    qDebug() << ui->lineEdit_IP->text();
-    qDebug() << port;
     ui->label_connection_state->setText("Otwarto połączenie!");
     QMessageBox::information(0, "Komunikat", "Otwarto polaczenie");
 }
 
 void MainWindow::on_pushButton_disconnect_clicked()
 {
+    if(is_active_User){
+        server->logout();
+    }
     ui->label_connection_state->setText("Zamknieto połączenie!");
     server->disconnectFromServer();
 }
 
 void MainWindow::on_pushButton_login_clicked()
 {
+    is_active_User = true;
     server->login(ui->lineEdit_login->text(), ui->lineEdit_password->text());
 }
 
@@ -166,9 +170,21 @@ void MainWindow::closeEvent (QCloseEvent *event)
     if (resBtn != QMessageBox::Yes) {
         event->ignore();
     } else {
-        server->logout();
+        if (is_active_User){
+            server->logout();
+        }
+        server->disconnectFromServer();
         event->accept();
-        qDebug() << "Close event - zamykanie komunikatora";
     }
-//    server->leaveRoom(roomName);
+
+}
+
+void MainWindow::on_pushButton_close_clicked()
+{
+    server->closeServerProperly();
+    server->disconnectFromServer();
+    printf("Wstepne zamknięcie servera");
+
+    qint32 port = ui->lineEdit_port->text().toInt(); //pozornie wygląda to na połączenie do serwera
+    server->connectToServer(ui->lineEdit_IP->text(), port); //ale to jest w rzeczywistości sygnał dla niego do RESETU
 }

@@ -50,7 +50,7 @@ class Database
         char* getStringWithAllRooms();
         int* getArrayofAllUsersConnfdInRoom(char *roomName);
         int getNumberOfUsersInRoom(char *roomName);
-
+	void deleteAllUserFromAllRooms();
 
 };
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>703</width>
-    <height>472</height>
+    <width>645</width>
+    <height>457</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -122,6 +122,19 @@
       </property>
       <property name="text">
        <string>port:</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_close">
+      <property name="geometry">
+       <rect>
+        <x>520</x>
+        <y>330</y>
+        <width>91</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Reset servera</string>
       </property>
      </widget>
     </widget>
@@ -288,7 +301,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>703</width>
+     <width>645</width>
      <height>19</height>
     </rect>
    </property>
