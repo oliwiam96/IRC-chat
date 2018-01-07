@@ -30,11 +30,14 @@ typedef struct thread_client_data_t{
 
 
 Database *db;
+pthread_mutex_t	mutexClients;
 bool is_server_active = true;
 
 void write_to_client(char *msg, int connfd)
 {
+    pthread_mutex_lock(&mutexClients);
     write(connfd, msg, strlen(msg));
+    pthread_mutex_unlock(&mutexClients);
 }
 
 
@@ -327,6 +330,7 @@ int main(int argc, char* argv[])
         printf("Serwer wystartowany\n");
         char fileName[] = "test.db";
         db = new Database(fileName);
+        mutexClients = PTHREAD_MUTEX_INITIALIZER;
 	int server_socket_descriptor; // to samo co listenfd
 	int connection_socket_descriptor; // to samo co connfd
 	int bind_result;
@@ -383,6 +387,7 @@ int main(int argc, char* argv[])
             handleConnection(connection_socket_descriptor);
 	}
         printf("Serwer zamknięty\n");
+        pthread_mutex_destroy(&mutexClients);
 	close(server_socket_descriptor);
 	return(0);
 }

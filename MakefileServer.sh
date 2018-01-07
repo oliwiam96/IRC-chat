@@ -1,2 +1,2 @@
 #!/bin/bash
-g++ -Wall -pthread  database.cpp server.cpp -o server -lsqlite3 &
+g++ -Wall -pthread -std=c++11 database.cpp server.cpp -o server -lsqlite3 &
